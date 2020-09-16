@@ -1,7 +1,11 @@
 import requests
 from github import Github
+import streamlit as st
+
 from apscheduler.schedulers.blocking import BlockingScheduler
 import argparse
+import fbchat
+from getpass import getpass
 
 tab = []
 parser = argparse.ArgumentParser()
@@ -9,6 +13,10 @@ parser.add_argument("--repo", type=str,
                     help="The repository ({github_user}/{repository})")
 parser.add_argument("--token", type=str,
                     help="Your github token")
+parser.add_argument("--fb_username", type=str,
+                    help="Your facebook username (email)")
+parser.add_argument("--fb_password", type=str,
+                    help="Your facebook password")
 
 
 def some_job():
@@ -16,31 +24,41 @@ def some_job():
     args = parser.parse_args()
     token = args.token
     rep = args.repo
+    password = args.fb_password
+    username = args.fb_username
     g = Github(token)
     repo = g.get_repo(rep)
+    try:
+        fileRead = open("./cards.txt")
+    except:
+        fileRead = open("./cards.txt", "x")
 
     tmp = []
     for id, i in enumerate(repo.get_projects()[0].get_columns()):
         tmp.append([])
         for card in i.get_cards():
-            tmp[id].append(card)
+            tmp[id].append(card.note)
 
-    if not tmp == tab:
-        for tmpcards in tmp:
-            for id1, card in enumerate(tmpcards):
-                for tabcards in tab:
-                    for id2, card2 in enumerate(tabcards):
-                        if not tabcards[id2] == tmpcards[id1]:
-                            print("CAVAPAS")
-    else:
-        print("yatoutquiva")
-    tab = tmp
+    if fileRead.readable():
+        for line in fileRead.readlines():
+            tab.append(eval(line))
+
+        if not tmp == tab:
+            for id in range([len(tmp), len(tab)][len(tmp) > len(tab)]):
+                res = set(tab[id]).symmetric_difference(tmp[id])
+                print(res)
+                if res is not None:
+                    session = fbchat.Session.login(username, password)
+                    thread = fbchat.Group(session=session, id="3249729908481407")
+                    thread.send_text(str(res))
+
+        else:
+            print("Up to date")
+
+    file = open("./cards.txt", "w")
+    for cards in tmp:
+        file.write(str(cards))
+        file.write("\n")
 
 
-def p():
-    scheduler = BlockingScheduler()
-    scheduler.add_job(some_job, 'interval', seconds=3)
-    scheduler.start()
-
-
-p()
+some_job()
