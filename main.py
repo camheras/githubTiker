@@ -17,6 +17,8 @@ parser.add_argument("--fb_username", type=str,
                     help="Your facebook username (email)")
 parser.add_argument("--fb_password", type=str,
                     help="Your facebook password")
+parser.add_argument("--fb_group", type=str,
+                    help="Your facebook password")
 
 
 def some_job():
@@ -26,6 +28,7 @@ def some_job():
     rep = args.repo
     password = args.fb_password
     username = args.fb_username
+    fb_group = args.fb_group
     g = Github(token)
     repo = g.get_repo(rep)
     try:
@@ -49,7 +52,7 @@ def some_job():
                 print(res)
                 if res is not None:
                     session = fbchat.Session.login(username, password)
-                    thread = fbchat.Group(session=session, id="3249729908481407")
+                    thread = fbchat.Group(session=session, id=fb_group)
                     thread.send_text(str(res))
 
         else:
