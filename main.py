@@ -18,7 +18,7 @@ parser.add_argument("--fb_username", type=str,
 parser.add_argument("--fb_password", type=str,
                     help="Your facebook password")
 parser.add_argument("--fb_group", type=str,
-                    help="Your facebook password")
+                    help="Your facebook group")
 
 
 def some_job():
