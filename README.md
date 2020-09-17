@@ -1,7 +1,7 @@
 GithubTiker
 =================
 
-> Facebook's notification from github commit
+> Facebook's notification from github checklist commit.
 
 Installation
 -----
