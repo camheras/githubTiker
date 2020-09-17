@@ -1,7 +1,7 @@
 GithubTiker
 =================
 
-> Facebook's notification from github issues
+> Facebook's notification from github commit
 
 Installation
 -----
